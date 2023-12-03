@@ -1,26 +1,20 @@
-import "dotenv/config";
 import express from "express";
-import mongoose from "mongoose";
 import bodyParser from "body-parser";
-import userRouter from "./routes/user-routes.js";
-import bidRouter from "./routes/bid-routes.js";
-import productRouter from "./routes/product-routes.js";
+import errorMiddleware from "./middleware/error.js";
+import userRouter from "./routes/userRoutes.js";
+import productRouter from "./routes/productRoutes.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
-const port = 3000;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use("/api/users",userRouter);
-app.use("/api/bids",bidRouter);
-app.use("/api/products",productRouter);
+app.use(cookieParser());
 
-const mongoURI = process.env.MONGODB_URI;
+app.use("/api/v1",productRouter);
+app.use("/api/v1",userRouter);
 
-mongoose.connect(mongoURI)
-.then(()=>console.log("Database connection successful!"))
-.catch((err)=>console.log(err));
+//Error middleware
+app.use(errorMiddleware);
 
-app.listen(port,()=>{
-    console.log("Server is running on port: "+port);
-});
+export default app;
