@@ -9,7 +9,7 @@ process.on("uncaughtException",(err)=>{
     server.close(()=>{
         process.exit(1);
     });
-})
+});
 
 const mongo_uri = process.env.MONGO_URI;
 

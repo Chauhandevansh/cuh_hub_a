@@ -6,7 +6,14 @@ import ApiFeatures from "../utils/apiFeatures.js";
 //Create product
 export const createProduct = catchAsyncError(async(req,res,next)=>{
     // req.body.user = req.user.id;
-    const product = await Product.create(req.body);
+    const {name, description, category, price, image}= req.body;
+    const product = await Product.create({
+        name, 
+        description, 
+        category, 
+        price,
+        image
+    });
     res.status(201).json({
         success: true,
         product
@@ -15,15 +22,60 @@ export const createProduct = catchAsyncError(async(req,res,next)=>{
 
 //Get all products
 export const getAllProducts = catchAsyncError(async (req,res)=>{
-    const resultPerPage = 5;
-    const productCount = await Product.countDocuments();
-    const apiFeatures = new ApiFeatures(Product.find(),req.query)
-    .search()
-    .filter()
-    .pagination(resultPerPage);
-    const products = await apiFeatures.query;
+    const products = await Product.find();
+
     res.status(201).json({
         success: true,
         products
     });
+});
+
+//Get single product
+export const getProductDetails = catchAsyncError(async (req, res, next) => {
+        const product = await Product.findById(req.params.id);
+
+        if (!product) {
+            throw new ErrorHandler('Product not found!', 404);
+        }
+
+        res.status(200).json({
+            success: true,
+            product,
+            //productCount
+        });
+});
+
+//Update product
+export const updateProduct = catchAsyncError(async(req,res,next)=>{
+    let product = await Product.findById(req.params.id);
+        if(!product){
+            throw new ErrorHandler('Product not found!', 404);
+        }
+    
+        product = await Product.findByIdAndUpdate(req.params.id,req.body,{
+            new: true,
+            runValidators: true,
+            useFindAndModify: false
+        });
+    
+        res.status(200).json({
+            success: true,
+            product
+        });
+});
+
+//Delete Product
+export const deleteProduct = catchAsyncError(async(req,res,next)=>{
+    const product = await Product.findById(req.params.id);
+
+        if(!product){
+            throw new ErrorHandler('Product not found!', 404);
+        }
+
+        await product.deleteOne();
+
+        res.status(200).json({
+            success: true,
+            message: "Product deleted successfully!"
+        });
 });

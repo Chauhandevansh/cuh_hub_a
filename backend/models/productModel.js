@@ -10,63 +10,21 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: [true,"Please enter product description"]
     },
+    category:{
+        type: String,
+        required: [true,"Please enter product category"]
+    },
     price:{
         type: Number,
         required: [true, "Please enter product price"],
         maxLength: [8,"Price cannot exceed 8 characters"]
     },
-    ratings:{
-        type: Number,
-        default:0
+    seller:{
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+        // required: true
     },
-    images:[
-        {
-            public_id:{
-                type: String,
-                required: true
-            },
-            url:{
-                type: String,
-                required: true
-            }
-        }
-    ],
-    category:{
-        type: String,
-        required: [true,"Please enter product category"]
-    },
-    stock:{
-        type: Number,
-        required: [true,"Please enter product stock"],
-        maxLength: [5,"Stock cannot exceed 5 characters"],
-        default: 1
-    },
-    numOfReviews:{
-        type: Number,
-        default: 0
-    },
-    reviews: [
-        {
-            user:{
-                type: mongoose.Schema.ObjectId,
-                ref: "User",
-                required: true
-            },
-            name:{
-                type: String,
-                required: true
-            },
-            rating: {
-                type: Number,
-                required: true
-            },
-            comment: {
-                type: String,
-                required: true
-            }
-        }
-    ],
-    user:{
+    buyer:{
         type: mongoose.Schema.ObjectId,
         ref: "User",
         // required: true
@@ -74,7 +32,12 @@ const productSchema = new mongoose.Schema({
     createdAt:{
         type: Date,
         default: Date.now
-    }
+    },
+    status: {
+        type: String,
+        default: "unsold"
+    },
+    image: String
 });
 
 export default mongoose.model("Product",productSchema);
