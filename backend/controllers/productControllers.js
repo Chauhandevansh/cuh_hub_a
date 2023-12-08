@@ -1,18 +1,18 @@
 import Product from "../models/productModel.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import catchAsyncError from "../middleware/catchAsyncError.js";
-import ApiFeatures from "../utils/apiFeatures.js";
+//import ApiFeatures from "../utils/apiFeatures.js";
 
 //Create product
 export const createProduct = catchAsyncError(async(req,res,next)=>{
-    // req.body.user = req.user.id;
-    const {name, description, category, price, image}= req.body;
+    const {name, description, category, price, image, seller}= req.body;
     const product = await Product.create({
         name, 
         description, 
         category, 
         price,
-        image
+        image,
+        seller
     });
     res.status(201).json({
         success: true,
@@ -41,7 +41,6 @@ export const getProductDetails = catchAsyncError(async (req, res, next) => {
         res.status(200).json({
             success: true,
             product,
-            //productCount
         });
 });
 
